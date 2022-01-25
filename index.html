@@ -15,6 +15,19 @@
     <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5" />
     <link rel="manifest" href="/manifest.webmanifest">
 </head>
+<style>
+    body {
+        font-size: 32px;
+    }
+    
+    button {
+        font-size: 1.5rem;
+    }
+    
+    textarea {
+        font-size: 1.2rem;
+    }
+</style>
 
 <body>
     <!-- <button id="create"> update database</button> -->
@@ -25,12 +38,27 @@
 
     <textarea id="settings" rows="4" cols="50">click log database to get settings </textarea>
 
-
     <script>
         // 1. check for database
         // 2. if exist, then ask for activation change
         // 3. if not exist, then ask for first time activation
         // 
+
+        const initSettings = {
+            installation: {
+                id: 1,
+            },
+            store: {
+                name: 'Default Store Name'
+            },
+            programs: [{
+                id: 1,
+                name: 'I'
+            }, {
+                id: 2,
+                name: 'Exist'
+            }]
+        }
 
         const dbName = "perkd_merchant";
         const version = "1";
@@ -131,18 +159,7 @@
             // catch error
             // tx.onerror = e => alert(` Error! ${e.target.error}  `)
 
-            var req = s.add({
-                installation: {
-                    id: 1,
-                },
-                programs: [{
-                    id: 1,
-                    name: 'I'
-                }, {
-                    id: 2,
-                    name: 'Exist'
-                }]
-            })
+            var req = s.add(initSettings)
 
             req.onsuccess = (e) => {
                 console.log('update db')
