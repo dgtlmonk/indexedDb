@@ -104,20 +104,8 @@
         // })
 
         btnLog.addEventListener('click', () => {
-            console.log(' log ')
-            const tx = db.transaction(dbName, "readonly")
-            const settings = tx.objectStore(dbName)
 
-            const req = settings.openCursor()
 
-            req.onsuccess = (e) => {
-                const res = e.target.result;
-
-                console.log(res.value)
-
-                document.getElementById('settings').value = JSON.stringify(res.value);
-
-            }
         })
 
         // btnDelete.addEventListener('click', () => {
@@ -135,6 +123,20 @@
             // var transaction = db.transaction(["customers"], IDBTransaction.READ_WRITE);
 
         })
+
+        function populateData() {
+            const tx = db.transaction(dbName, "readonly")
+            const settings = tx.objectStore(dbName)
+            const req = settings.openCursor()
+
+            req.onsuccess = (e) => {
+                const res = e.target.result;
+
+                console.log(res.value)
+
+                document.getElementById('settings').value = JSON.stringify(res.value);
+            }
+        }
 
 
         function updateDB() {
@@ -179,6 +181,7 @@
                     `success is called database name: ${db.name} version : ${db.version}`
                 );
                 isDbExist = true;
+                populateData()
 
             };
 
