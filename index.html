@@ -32,7 +32,8 @@
 </style>
 
 <body>
-    <!-- <button id="create"> update database</button> -->
+
+    some changes
 
 
     <div>
@@ -46,9 +47,6 @@
         <button id="log">print settings</button>
     </div>
 
-
-
-    <!-- <button id="check-db"> check database existence</button> -->
 
 
 
@@ -114,8 +112,6 @@
 
         btnCreate.addEventListener('click', () => {
             console.log(' creating db ', db)
-
-
             updateDB()
 
             // Note: Older experimental implementations use the deprecated constant IDBTransaction.READ_WRITE instead of "readwrite".
@@ -125,6 +121,7 @@
         })
 
         function populateData() {
+            console.log(' populating data ')
             const tx = db.transaction(dbName, "readonly")
             const settings = tx.objectStore(dbName)
             const req = settings.openCursor()
@@ -133,7 +130,6 @@
                 const res = e.target.result;
 
                 console.log(res.value)
-
                 document.getElementById('settings').value = JSON.stringify(res.value);
             }
         }
