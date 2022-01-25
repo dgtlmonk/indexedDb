@@ -43,7 +43,7 @@
 
     <div>
         click this in home app
-        <button id="log">print settings</button>
+        <button id="print">print settings</button>
     </div>
 
 
@@ -90,24 +90,12 @@
 
         // const btnDelete = document.getElementById("delete")
         const btnCreate = document.getElementById("create")
-        const btnLog = document.getElementById("log")
-            // const btnCheck = document.getElementById("check-db")
+        const btnPrint = document.getElementById("print")
 
 
-
-
-        // btnCheck.addEventListener('click', () => {
-        //     console.log(' db exist ', isDbExist)
-        // })
-
-        btnLog.addEventListener('click', () => {
-
-
+        btnPrint.addEventListener('click', () => {
+            printData()
         })
-
-        // btnDelete.addEventListener('click', () => {
-        //     console.log(' delete ')
-        // })
 
         btnCreate.addEventListener('click', () => {
             console.log(' creating db ', db)
@@ -119,7 +107,7 @@
 
         })
 
-        function populateData() {
+        function printData() {
             console.log(' populating data ')
             const tx = db.transaction(dbName, "readonly")
             const settings = tx.objectStore(dbName)
@@ -176,8 +164,7 @@
                     `success is called database name: ${db.name} version : ${db.version}`
                 );
                 isDbExist = true;
-                populateData()
-
+                printData()
             };
 
             req.onerror = (e) => {
