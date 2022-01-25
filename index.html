@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+</head>
+
+<body>
+    <!-- <button id="create"> update database</button> -->
+    <button id="log"> log database</button>
+    <!-- <button id="check-db"> check database existence</button> -->
+
+
+
+    <textarea id="settings" rows="4" cols="50">click log database to get settings </textarea>
+
+
+    <script>
+        // 1. check for database
+        // 2. if exist, then ask for activation change
+        // 3. if not exist, then ask for first time activation
+        // 
+
+        const dbName = "perkd_merchant";
+        const version = "1";
+        let isDbExist = false;
+        let db =
+            window.indexedDB ||
+            window.webkitIndexedDB ||
+            window.mozIndexedDB ||
+            window.OIndexedDB ||
+            window.msIndexedDB;
+
+
+        if (!db) {
+            console.log("Your browser doesn't support a stable version of IndexedDB. Such and such feature will not be available.");
+        }
+
+        // const btnDelete = document.getElementById("delete")
+        // const btnCreate = document.getElementById("create")
+        const btnLog = document.getElementById("log")
+            // const btnCheck = document.getElementById("check-db")
+
+
+
+
+        // btnCheck.addEventListener('click', () => {
+        //     console.log(' db exist ', isDbExist)
+        // })
+
+        btnLog.addEventListener('click', () => {
+            console.log(' log ')
+            const tx = db.transaction(dbName, "readonly")
+            const settings = tx.objectStore(dbName)
+
+            const req = settings.openCursor()
+
+            req.onsuccess = (e) => {
+                const res = e.target.result;
+
+                console.log(res.value)
+
+                document.getElementById('settings').value = JSON.stringify(res.value);
+
+            }
+        })
+
+        // btnDelete.addEventListener('click', () => {
+        //     console.log(' delete ')
+        // })
+
+        // btnCreate.addEventListener('click', () => {
+        //     console.log(' creating db ', db)
+
+        // Note: Older experimental implementations use the deprecated constant IDBTransaction.READ_WRITE instead of "readwrite".
+        // In case you want to support such an implementation, you can write:
+        // var transaction = db.transaction(["customers"], IDBTransaction.READ_WRITE);
+
+        // })
+
+        function createDB() {
+            console.log('createDB called ..')
+            const req = indexedDB.open(dbName, 1);
+
+
+            // onupgradeneeded is the only place where you can alter the structure of the database. 
+            // In it, you can create and delete object stores and build and remove indices.
+
+            req.onupgradeneeded = (e) => {
+                console.log('onupgradeneeded called')
+                db = e.target.result;
+
+                db.createObjectStore(dbName, {
+                    keyPath: "installation.id"
+                })
+
+                console.info(`Activation ${db.name} version : ${db.version}`);
+            };
+
+            req.onsuccess = (e) => {
+                db = e.target.result;
+                console.info(
+                    `success is called database name: ${db.name} version : ${db.version}`
+                );
+                isDbExist = true;
+
+                updateDB()
+            };
+
+            req.onerror = (e) => {
+                console.info(`error: ${e.target.error} was found `);
+            };
+        }
+
+
+        function updateDB() {
+            const tx = db.transaction(dbName, "readwrite");
+            const s = tx.objectStore(dbName)
+
+            // catch error
+            // tx.onerror = e => alert(` Error! ${e.target.error}  `)
+
+            var req = s.add({
+                installation: {
+                    id: 1,
+                },
+                programs: [{
+                    id: 1,
+                    name: 'I'
+                }, {
+                    id: 2,
+                    name: 'Exist'
+                }]
+            })
+
+            req.onsuccess = (e) => {
+                console.log('update db')
+            }
+        }
+
+        createDB();
+    </script>
+</body>
+
+</html>
