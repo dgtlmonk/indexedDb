@@ -22,6 +22,8 @@
     
     button {
         font-size: 1.5rem;
+        padding: .5rem;
+        margin: 1rem;
     }
     
     textarea {
@@ -31,12 +33,26 @@
 
 <body>
     <!-- <button id="create"> update database</button> -->
-    <button id="log"> log database</button>
+
+
+    <div>
+        click this in browser
+        <button id="create">populate data</button>
+    </div>
+
+
+    <div>
+        click this in home app
+        <button id="log">print settings</button>
+    </div>
+
+
+
     <!-- <button id="check-db"> check database existence</button> -->
 
 
 
-    <textarea id="settings" rows="4" cols="50">click log database to get settings </textarea>
+    <textarea id="settings" readonly rows="4" cols="50"> ...</textarea>
 
     <script>
         // 1. check for database
@@ -76,7 +92,7 @@
         }
 
         // const btnDelete = document.getElementById("delete")
-        // const btnCreate = document.getElementById("create")
+        const btnCreate = document.getElementById("create")
         const btnLog = document.getElementById("log")
             // const btnCheck = document.getElementById("check-db")
 
@@ -108,14 +124,35 @@
         //     console.log(' delete ')
         // })
 
-        // btnCreate.addEventListener('click', () => {
-        //     console.log(' creating db ', db)
+        btnCreate.addEventListener('click', () => {
+            console.log(' creating db ', db)
 
-        // Note: Older experimental implementations use the deprecated constant IDBTransaction.READ_WRITE instead of "readwrite".
-        // In case you want to support such an implementation, you can write:
-        // var transaction = db.transaction(["customers"], IDBTransaction.READ_WRITE);
 
-        // })
+            updateDB()
+
+            // Note: Older experimental implementations use the deprecated constant IDBTransaction.READ_WRITE instead of "readwrite".
+            // In case you want to support such an implementation, you can write:
+            // var transaction = db.transaction(["customers"], IDBTransaction.READ_WRITE);
+
+        })
+
+
+        function updateDB() {
+            const tx = db.transaction(dbName, "readwrite");
+            const s = tx.objectStore(dbName)
+
+            // catch error
+            // tx.onerror = e => alert(` Error! ${e.target.error}  `)
+
+            var req = s.add(initSettings)
+
+            req.onsuccess = (e) => {
+                console.log('update db')
+            }
+        }
+
+
+
 
         function createDB() {
             console.log('createDB called ..')
@@ -143,27 +180,11 @@
                 );
                 isDbExist = true;
 
-                updateDB()
             };
 
             req.onerror = (e) => {
                 console.info(`error: ${e.target.error} was found `);
             };
-        }
-
-
-        function updateDB() {
-            const tx = db.transaction(dbName, "readwrite");
-            const s = tx.objectStore(dbName)
-
-            // catch error
-            // tx.onerror = e => alert(` Error! ${e.target.error}  `)
-
-            var req = s.add(initSettings)
-
-            req.onsuccess = (e) => {
-                console.log('update db')
-            }
         }
 
         createDB();
